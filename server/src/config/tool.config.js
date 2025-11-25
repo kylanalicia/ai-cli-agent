@@ -81,6 +81,9 @@ export function enableTools(toolIds) {
     console.log(chalk.gray(`[DEBUG] Total tools enabled: ${enabledCount}/${availableTools.length}`))
    
 }
+/**
+ * Get all enabled tool names
+ */
 
 export function getEnabledToolNames() {
     const names = availableTools.filter(t => t.enabled).map(t => t.name)

@@ -71,12 +71,12 @@ async function selectTools() {
         required: false,
     })
 
-    if(isCancel(selectTools)) {
+    if(isCancel(selectedTools)) {
         cancel(chalk.yellow("Tool selection cancelled."))
         process.exit(1);
     }
-    enableTools(selectTools)
-    if(selectTools.length === 0) {
+    enableTools(selectedTools)
+    if(selectedTools.length === 0) {
         console.log(chalk.yellow("⚠️ No tools selected. AI will work without tools.\n."))
         process.exit(1);
     } else {
@@ -100,7 +100,7 @@ async function selectTools() {
     return selectTools.length > 0
 }
 
-async function initConversation(userId, conversationId=null, mode="tool") {
+async function initConversation(userId, mode="tool", conversationId=null) {
     const spinner = yoctoSpinner({ text: "Loading conversation..."}).start();
 
     const conversation = await chatService.getOrCreateConversation(userId, conversationId, mode)
@@ -126,7 +126,7 @@ async function initConversation(userId, conversationId=null, mode="tool") {
 
     console.log(conversationInfo)
 
-    // Display existing messages if any
+    // Display existing messages if any -
     if (conversation.messages?.length > 0) {
         console.log(chalk.yellow("📔 Previous messages:\n"))
         displayMessages(conversation.messages)
@@ -166,6 +166,88 @@ function displayMessages(messages) {
 
 async function saveMessage(conversationId, role, content) {
     return await chatService.addMessage(conversationId, role, content)
+}
+
+async function getAIResponse(conversationId) {
+    const spinner = yoctoSpinner({ 
+    text: "AI is thinking...",
+    color: "cyan"
+    }).start();
+
+    const dbMessages = await chatService.getMessages(conversationId)
+    const aiMessages = chatService.formatMessagesForAI(dbMessages)
+
+    const tools = getEnabledTools()
+
+    let fullResponse = ""
+    let isFirstChunk = true;
+    const toolCallsDetected = []
+
+    try {
+        const result = await aiService.sendMessage(
+            aiMessages, (chunk) => {
+                if (isFirstChunk) {
+                    spinner.stop();
+                    console.log("\n")
+                    const header = chalk.green.bold("🤖 Assistant")
+                    console.log(header)
+                    console.log(chalk.gray("-".repeat(60)))
+                    isFirstChunk = false
+                }
+                fullResponse += chunk  
+        },
+        tools,
+        (toolCall) => {
+            toolCallsDetected.push(toolCall)
+        }
+    )
+    if(toolCallsDetected.length > 0) {
+        console.log("\n")
+        const toolCallBox = boxen(
+            toolCallsDetected.map(tc => 
+                `${chalk.cyan("🔧 Tool:")} ${tc.toolName}\n${chalk.gray("Args:")} ${JSON.stringify(tc.args, null, 2)} `
+            ).join("\n\n"),
+            {
+                padding: 1,
+                margin: 1,
+                borderStyle: "round",
+                borderColor: "cyan",
+                dimBorder: "🛠️ Tool Calls",
+            }
+        )
+        console.log(toolCallBox)
+    }
+    // Display tool results if any
+    if (result.toolResults && result.toolResults.length > 0) {
+        const toolResultBox = boxen(
+            result.toolResults.map(tr => 
+                `${chalk.green("✅ Tool:")} ${tr.toolName}\n${chalk.gray("Result:")} ${JSON.stringify(tr.result, null, 2).slice(0, 200)}... `
+            ).join("\n\n"),
+            {
+                padding: 1,
+                margin: 1,
+                borderStyle: "round",
+                borderColor: "cyan",
+                dimBorder: "📊 Tool Results",
+            }
+        )
+        console.log(toolResultBox)
+    }
+
+    // Render markdown response
+    console.log("\n")
+    const renderedMarkdown = marked.parse(fullResponse);
+    console.log(renderedMarkdown)
+    console.log(chalk.gray("-".repeat(60)))
+    console.log("\n")
+
+    return result.content
+        
+    } catch (error) {
+        spinner.error("Failed to get AI response.")
+        throw error
+        
+    }
 }
 
 async function updateConversationTitle(conversationId, userInput, messageCount) {
