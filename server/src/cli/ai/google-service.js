@@ -1,5 +1,5 @@
 import {google} from "@ai-sdk/google"
-import {streamText} from "ai"
+import {convertToModelMessages, streamText} from "ai"
 import {config} from "../../config/google.config.js"
 import chalk from "chalk";
 
@@ -26,7 +26,7 @@ export class AIService {
         try {
             const streamConfig = {
                 model: this.model,
-                messages, messages,
+                messages: messages,
             }
             const result = streamText(streamConfig)
 
