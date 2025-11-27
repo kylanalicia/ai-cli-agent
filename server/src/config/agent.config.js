@@ -2,7 +2,7 @@ import {promises as fs} from "fs";
 import path from "path";
 import chalk from "chalk";
 import {generateObject} from "ai"
-import {z} from "zod";
+import * as z from "zod";
 
 const ApplicationSchema = z.object({
     folderName: z.string().describe("Kebab-Case folder name for the application"),
@@ -32,7 +32,7 @@ function displayFileTree(files, folderName) {
     const filesByDir = {};
     files.forEach(file => {
         const parts = file.path.split('/');
-        const dir = path.length > 1 ? parts.slice(0,- 1).join('/') : '';
+        const dir = parts.length > 1 ? parts.slice(0,- 1).join('/') : '';
         if (!filesByDir[dir]) {
             filesByDir[dir] = [];
         }
@@ -142,11 +142,11 @@ Provide:
         }
         
     } catch (error) {
-        printSystem(chalk.red(`\n❌ Error generating application: ${err.message}\n`));
-        if (err.stack) {
-            printSystem(chalk.dim(err.stack + '\n'));
+        printSystem(chalk.red(`\n❌ Error generating application: ${error.message}\n`));
+        if (error.stack) {
+            printSystem(chalk.dim(error.stack + '\n'));
         }
-        throw err;
+        throw error;
         
     }
     

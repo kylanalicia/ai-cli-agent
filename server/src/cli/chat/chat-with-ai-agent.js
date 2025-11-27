@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import boxen from "boxen";
-import { text, isCancel, cancel, intro, outro, multiselect } from "@clack/prompts";
+import { text, isCancel, cancel, intro, outro, multiselect, confirm} from "@clack/prompts";
 import {AIService} from "../ai/google-service.js"
 import {ChatService} from "../../service/chat.service.js"
 import {getStoredToken} from "../commands/auth/login.js"
@@ -85,7 +85,7 @@ async function agentLoop(conversation) {
               if (!value || value.trim().length === 0) {
                   return "Description cannot be empty"
               }
-              if(value.trim().length > 10) {
+              if(value.trim().length < 10) {
                   return "Please provide more details (at least 10 characters)"
               }
           }
