@@ -14,7 +14,9 @@ Autonomous coding agent capabilities
 
 # Installation
 git clone git@github.com:kylanalicia/ai-cli-agent.git
+
 cd zyra
+
 npm install
 
 # Frontend
@@ -25,32 +27,7 @@ npm run dev
 cd server
 npm run dev
 
-Create .env in the server directory:
-
-# Google Gemini API (Get from aisdk.com)
-GOOGLE_GENERATIVE_AI_API_KEY=<your_google_gemini_api_key>
-ORBITAI_MODEL=gemini-2.5-flash
-
-# Server Configuration
-PORT=<your_port_number>
-NODE_ENV=development
-
-# Database
-DATABASE_URL=<your_postgresql_database_url>
-
-# Better Auth
-BETTER_AUTH_SECRET=<your_better_auth_secret>
-BETTER_AUTH_URL=<your_backend_url>
-
-# GitHub OAuth
-GITHUB_CLIENT_ID=<your_github_oauth_client_id>
-GITHUB_CLIENT_SECRET=<your_github_oauth_client_secret>
-
-# URL Configuration
-FRONTEND_URL=<your_frontend_url>
-BASE_URL=<your_backend_url>
-
- CLI Setup
+# CLI Setup
 Inside the server directory:
 
 # Make CLI executable and create global symlink
