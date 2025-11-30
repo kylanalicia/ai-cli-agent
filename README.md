@@ -38,7 +38,7 @@ npm run dev:link
 # Test the CLI
 zyra --version
 
-Available Scripts (Backend)
+# Available Scripts (Backend)
 
 Script	Purpose
 
@@ -50,7 +50,7 @@ npm run cli	Test CLI locally
 
 npm run dev:link	Setup global CLI link
 
-💻 Usage
+# 💻 Usage
 After installation, you can use the zyra command globally:
 
 zyra --help    # Show help
