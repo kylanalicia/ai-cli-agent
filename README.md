@@ -21,10 +21,12 @@ npm install
 
 # Frontend
 cd client
+
 npm run dev
 
 # Backend
 cd server
+
 npm run dev
 
 # CLI Setup
@@ -35,18 +37,27 @@ npm run dev:link
 
 # Test the CLI
 zyra --version
+
 Available Scripts (Backend)
+
 Script	Purpose
+
 npm start	Run main application
+
 npm run dev	Run with auto-reload
+
 npm run cli	Test CLI locally
+
 npm run dev:link	Setup global CLI link
 
 💻 Usage
 After installation, you can use the zyra command globally:
 
 zyra --help    # Show help
+
 zyra --version # Show version
+
 zyra login     # Login to your account
+
 zyra wakeup    # Wake up the AI
 
