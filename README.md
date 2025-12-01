@@ -7,10 +7,15 @@ A production-ready AI assistant CLI built with Node.js and Google Gemini. Chat, 
 
 # Features
 Conversational AI with Google Gemini integration
+
 Application generation and code execution
+
 OAuth device flow authentication
+
 PostgreSQL history storage
+
 Autonomous coding agent capabilities
+
 
 # Installation
 git clone git@github.com:kylanalicia/ai-cli-agent.git
